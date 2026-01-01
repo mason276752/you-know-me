@@ -217,9 +217,11 @@ const CardGame = () => {
         </div>
       ) : (
         <div className="card-display">
-          <button className="back-button" onClick={handleReset}>
-            ← 返回選擇牌堆
-          </button>
+          <div className="card-header">
+            <button className="back-button" onClick={handleReset}>
+              ← 返回選擇牌堆
+            </button>
+          </div>
           <Card
             level={selectedLevel}
             content={drawnCard}
