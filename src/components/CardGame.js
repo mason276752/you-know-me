@@ -12,7 +12,12 @@ const CardGame = () => {
   const [showTransition, setShowTransition] = useState(false);
   const [cardIndex, setCardIndex] = useState(null);
   const [audioLoaded, setAudioLoaded] = useState(false);
+  const [musicLoaded, setMusicLoaded] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
   const audioRef = useRef(null);
+  const musicRef = useRef(null);
+  const loadStartTime = useRef(Date.now());
 
   const handleSelectDeck = (level) => {
     const availableCards = cardData[level].filter(
@@ -29,7 +34,7 @@ const CardGame = () => {
   };
 
   useEffect(() => {
-    // Preload audio
+    // Preload flip sound
     const audio = new Audio('/poker.mp3');
     audioRef.current = audio;
 
@@ -40,10 +45,35 @@ const CardGame = () => {
     audio.addEventListener('canplaythrough', handleCanPlayThrough);
     audio.load();
 
+    // Preload background music
+    const music = new Audio('/music.mp3');
+    music.loop = true;
+    musicRef.current = music;
+
+    const handleMusicCanPlayThrough = () => {
+      setMusicLoaded(true);
+    };
+
+    music.addEventListener('canplaythrough', handleMusicCanPlayThrough);
+    music.load();
+
     return () => {
       audio.removeEventListener('canplaythrough', handleCanPlayThrough);
+      music.removeEventListener('canplaythrough', handleMusicCanPlayThrough);
     };
   }, []);
+
+  useEffect(() => {
+    // Ensure minimum 3 second loading time
+    if (audioLoaded && musicLoaded) {
+      const elapsed = Date.now() - loadStartTime.current;
+      const remaining = Math.max(0, 3000 - elapsed);
+
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, remaining);
+    }
+  }, [audioLoaded, musicLoaded]);
 
   useEffect(() => {
     if (showTransition && selectedLevel !== null) {
@@ -93,7 +123,17 @@ const CardGame = () => {
     );
 
     if (availableCards.length === 0) {
-      alert('這個牌堆的卡片已經抽完了！');
+      // All cards drawn, show shuffle animation and reset
+      setShowTransition(true);
+      setTimeout(() => {
+        setUsedCards(prev => ({
+          ...prev,
+          [selectedLevel]: []
+        }));
+        setShowTransition(false);
+        setDrawnCard(null);
+        setIsFlipped(false);
+      }, 1500);
       return;
     }
 
@@ -111,13 +151,28 @@ const CardGame = () => {
     setCardIndex(null);
   };
 
-  if (!audioLoaded) {
+  const toggleMusic = () => {
+    if (musicRef.current) {
+      if (isMusicPlaying) {
+        musicRef.current.pause();
+        setIsMusicPlaying(false);
+      } else {
+        musicRef.current.play().catch(err => console.log('Music play failed:', err));
+        setIsMusicPlaying(true);
+      }
+    }
+  };
+
+  if (!loadingComplete) {
     return (
       <div className="card-game">
         <div className="loading-screen">
-          <div className="loading-content">
-            <div className="loading-spinner"></div>
-            <p className="loading-text">載入中...</p>
+          <div className="loading-cover">
+            <img
+              src="/cover.jpg"
+              alt="Loading"
+              className="cover-image"
+            />
           </div>
         </div>
       </div>
@@ -126,6 +181,9 @@ const CardGame = () => {
 
   return (
     <div className="card-game">
+      <button className="music-toggle" onClick={toggleMusic}>
+        {isMusicPlaying ? '🔊' : '🔇'}
+      </button>
       <h1 className="game-title">深度地認識一個人</h1>
 
       {selectedLevel === null ? (
@@ -146,13 +204,16 @@ const CardGame = () => {
         </div>
       ) : showTransition ? (
         <div className="transition-screen">
-          <div className="card-flying">
+          <div className={`card-flying ${drawnCard !== null ? 'shuffle-animation' : ''}`}>
             <img
               src={`/level${selectedLevel}.png`}
               alt="flying card"
               className="flying-card-img"
             />
           </div>
+          {drawnCard !== null && (
+            <p className="transition-text shuffle-text">洗牌中...</p>
+          )}
         </div>
       ) : (
         <div className="card-display">
@@ -177,11 +238,6 @@ const CardGame = () => {
               </button>
             )}
           </div>
-          {drawnCard && (
-            <div className="card-info">
-              <p>剩餘卡片: {cardData[selectedLevel].length - usedCards[selectedLevel].length} / {cardData[selectedLevel].length}</p>
-            </div>
-          )}
         </div>
       )}
     </div>

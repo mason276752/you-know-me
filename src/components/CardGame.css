@@ -2,12 +2,42 @@
   min-height: 100vh;
   background: linear-gradient(to bottom, #e0f7fa, #ffffff);
   padding: 40px 20px;
+  position: relative;
+}
+
+.music-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.music-toggle:hover {
+  background: white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.music-toggle:active {
+  transform: scale(0.95);
 }
 
 .game-title {
   text-align: center;
   font-size: 48px;
-  color: #333;
+  color: #2094c5;
   margin-bottom: 40px;
   font-weight: 700;
 }
@@ -137,11 +167,19 @@
   animation: cardFly 1.2s ease-out;
 }
 
+.card-flying.shuffle-animation {
+  animation: shuffleCards 1.5s ease-in-out;
+}
+
 .flying-card-img {
   width: 300px;
   height: 420px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.shuffle-text {
+  margin-top: 20px;
 }
 
 @keyframes cardFly {
@@ -159,31 +197,57 @@
   }
 }
 
+@keyframes shuffleCards {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-15deg) translateX(-30px) scale(0.95);
+  }
+  30% {
+    transform: rotate(15deg) translateX(30px) scale(0.95);
+  }
+  45% {
+    transform: rotate(-10deg) translateX(-20px) scale(0.98);
+  }
+  60% {
+    transform: rotate(10deg) translateX(20px) scale(0.98);
+  }
+  75% {
+    transform: rotate(-5deg) translateX(-10px) scale(1);
+  }
+  90% {
+    transform: rotate(5deg) translateX(10px) scale(1);
+  }
+  100% {
+    transform: rotate(0deg) translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
 .loading-screen {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #e0f7fa, #ffffff);
 }
 
-.loading-content {
-  text-align: center;
-}
-
-.loading-spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #667eea;
+.loading-cover {
+  width: 400px;
+  height: 400px;
   border-radius: 50%;
-  margin: 0 auto 20px;
-  animation: spin 1s linear infinite;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.loading-text {
-  font-size: 24px;
-  font-weight: 600;
-  color: #555;
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 @keyframes spin {
@@ -191,9 +255,28 @@
   100% { transform: rotate(360deg); }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+  }
+}
+
 @media (max-width: 768px) {
   .card-game {
     padding: 30px 15px;
+  }
+
+  .music-toggle {
+    top: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
   }
 
   .game-title {
@@ -246,20 +329,23 @@
     height: 392px;
   }
 
-  .loading-text {
-    font-size: 22px;
-  }
-
-  .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border-width: 5px;
+  .loading-cover {
+    width: 500px;
+    height: 500px;
   }
 }
 
 @media (max-width: 480px) {
   .card-game {
     padding: 20px 10px;
+  }
+
+  .music-toggle {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
   }
 
   .game-title {
@@ -308,13 +394,8 @@
     height: 364px;
   }
 
-  .loading-text {
-    font-size: 20px;
-  }
-
-  .loading-spinner {
-    width: 45px;
-    height: 45px;
-    border-width: 4px;
+  .loading-cover {
+    width: 280px;
+    height: 280px;
   }
 }
