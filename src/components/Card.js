@@ -2,7 +2,7 @@ import React from 'react';
 import './Card.css';
 import { levelNames } from '../data/cardData';
 
-const Card = ({ level, content, isFlipped, onFlip }) => {
+const Card = ({ level, content, isFlipped, onFlip, isDrawingNext }) => {
   const renderLevelName = () => {
     const parts = levelNames[level].split(' - ');
     return (
@@ -24,7 +24,7 @@ const Card = ({ level, content, isFlipped, onFlip }) => {
   };
 
   return (
-    <div className={`card-container ${isFlipped ? 'flipped' : ''}`} onClick={onFlip}>
+    <div className={`card-container ${isFlipped ? 'flipped' : ''} ${isDrawingNext ? 'drawing-next' : ''}`} onClick={onFlip}>
       <div className="card">
         <div className="card-front">
           <img

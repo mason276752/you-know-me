@@ -15,6 +15,7 @@ const CardGame = () => {
   const [musicLoaded, setMusicLoaded] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [isDrawingNext, setIsDrawingNext] = useState(false);
   const audioRef = useRef(null);
   const musicRef = useRef(null);
   const loadStartTime = useRef(Date.now());
@@ -67,7 +68,7 @@ const CardGame = () => {
     // Ensure minimum 3 second loading time
     if (audioLoaded && musicLoaded) {
       const elapsed = Date.now() - loadStartTime.current;
-      const remaining = Math.max(0, 3000 - elapsed);
+      const remaining = Math.max(0, 1500 - elapsed);
 
       setTimeout(() => {
         setLoadingComplete(true);
@@ -123,23 +124,52 @@ const CardGame = () => {
     );
 
     if (availableCards.length === 0) {
-      // All cards drawn, show shuffle animation and reset
-      setShowTransition(true);
-      setTimeout(() => {
-        setUsedCards(prev => ({
-          ...prev,
-          [selectedLevel]: []
-        }));
-        setShowTransition(false);
-        setDrawnCard(null);
+      // All cards drawn, flip back first, then shuffle and reset
+      if (isFlipped) {
         setIsFlipped(false);
-      }, 1500);
+        setTimeout(() => {
+          setShowTransition(true);
+          setTimeout(() => {
+            setUsedCards(prev => ({
+              ...prev,
+              [selectedLevel]: []
+            }));
+            setShowTransition(false);
+            setDrawnCard(null);
+          }, 1500);
+        }, 600); // Wait for flip animation to complete
+      } else {
+        setShowTransition(true);
+        setTimeout(() => {
+          setUsedCards(prev => ({
+            ...prev,
+            [selectedLevel]: []
+          }));
+          setShowTransition(false);
+          setDrawnCard(null);
+        }, 1500);
+      }
       return;
     }
 
-    // Reset to card back state
-    setDrawnCard(null);
-    setIsFlipped(false);
+    // If already showing card back, directly start slide animation
+    if (!isFlipped) {
+      setIsDrawingNext(true);
+      setTimeout(() => {
+        setDrawnCard(null);
+        setIsDrawingNext(false);
+      }, 500); // Duration of slide animation
+    } else {
+      // If card is flipped, flip back first, then slide
+      setIsFlipped(false);
+      setTimeout(() => {
+        setIsDrawingNext(true);
+        setTimeout(() => {
+          setDrawnCard(null);
+          setIsDrawingNext(false);
+        }, 500); // Duration of slide animation
+      }, 600); // Wait for flip animation to complete
+    }
   };
 
   const handleResetAll = () => {
@@ -203,17 +233,24 @@ const CardGame = () => {
           </button>
         </div>
       ) : showTransition ? (
-        <div className="transition-screen">
-          <div className={`card-flying ${drawnCard !== null ? 'shuffle-animation' : ''}`}>
-            <img
-              src={process.env.PUBLIC_URL + `/level${selectedLevel}.png`}
-              alt="flying card"
-              className="flying-card-img"
-            />
+        <div className="card-display">
+          <div className="card-header">
+            <button className="back-button" onClick={handleReset}>
+              ← 返回選擇牌堆
+            </button>
           </div>
-          {drawnCard !== null && (
-            <p className="transition-text shuffle-text">洗牌中...</p>
-          )}
+          <div className="transition-screen">
+            <div className={`card-flying ${drawnCard !== null ? 'shuffle-animation' : ''}`}>
+              <img
+                src={process.env.PUBLIC_URL + `/level${selectedLevel}.png`}
+                alt="flying card"
+                className="flying-card-img"
+              />
+            </div>
+            {drawnCard !== null && (
+              <p className="transition-text shuffle-text">洗牌中...</p>
+            )}
+          </div>
         </div>
       ) : (
         <div className="card-display">
@@ -227,11 +264,17 @@ const CardGame = () => {
             content={drawnCard}
             isFlipped={isFlipped}
             onFlip={handleFlip}
+            isDrawingNext={isDrawingNext}
           />
           <div className="button-group">
             {!isFlipped && drawnCard === null && (
               <button className="action-button secondary" onClick={handleFlip}>
                 翻開卡片
+              </button>
+            )}
+            {!isFlipped && drawnCard !== null && (
+              <button className="action-button secondary" onClick={handleDrawNext}>
+                抽下一張牌
               </button>
             )}
             {isFlipped && drawnCard !== null && (
