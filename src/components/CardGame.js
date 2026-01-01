@@ -10,7 +10,6 @@ const CardGame = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [usedCards, setUsedCards] = useState({ 0: [], 1: [], 2: [], 3: [] });
   const [showTransition, setShowTransition] = useState(false);
-  const [cardIndex, setCardIndex] = useState(null);
   const [audioLoaded, setAudioLoaded] = useState(false);
   const [musicLoaded, setMusicLoaded] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
@@ -101,7 +100,6 @@ const CardGame = () => {
       const originalIndex = cardData[selectedLevel].indexOf(availableCards[randomIndex]);
 
       setDrawnCard(availableCards[randomIndex]);
-      setCardIndex(originalIndex);
       setUsedCards(prev => ({
         ...prev,
         [selectedLevel]: [...prev[selectedLevel], originalIndex]
@@ -115,7 +113,6 @@ const CardGame = () => {
     setDrawnCard(null);
     setIsFlipped(false);
     setShowTransition(false);
-    setCardIndex(null);
   };
 
   const handleDrawNext = () => {
@@ -178,7 +175,6 @@ const CardGame = () => {
     setDrawnCard(null);
     setIsFlipped(false);
     setShowTransition(false);
-    setCardIndex(null);
   };
 
   const toggleMusic = () => {
@@ -214,7 +210,7 @@ const CardGame = () => {
       <button className="music-toggle" onClick={toggleMusic}>
         {isMusicPlaying ? '🔊' : '🔇'}
       </button>
-      <h1 className="game-title">深度地認識一個人</h1>
+      <h1 className="game-title">深刻地認識一個人</h1>
 
       {selectedLevel === null ? (
         <div className="deck-selection">
