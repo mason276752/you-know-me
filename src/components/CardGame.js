@@ -35,7 +35,7 @@ const CardGame = () => {
 
   useEffect(() => {
     // Preload flip sound
-    const audio = new Audio('/poker.mp3');
+    const audio = new Audio(process.env.PUBLIC_URL + '/poker.mp3');
     audioRef.current = audio;
 
     const handleCanPlayThrough = () => {
@@ -46,7 +46,7 @@ const CardGame = () => {
     audio.load();
 
     // Preload background music
-    const music = new Audio('/music.mp3');
+    const music = new Audio(process.env.PUBLIC_URL + '/music.mp3');
     music.loop = true;
     musicRef.current = music;
 
@@ -169,7 +169,7 @@ const CardGame = () => {
         <div className="loading-screen">
           <div className="loading-cover">
             <img
-              src="/cover.jpg"
+              src={process.env.PUBLIC_URL + '/cover.jpg'}
               alt="Loading"
               className="cover-image"
             />
@@ -206,7 +206,7 @@ const CardGame = () => {
         <div className="transition-screen">
           <div className={`card-flying ${drawnCard !== null ? 'shuffle-animation' : ''}`}>
             <img
-              src={`/level${selectedLevel}.png`}
+              src={process.env.PUBLIC_URL + `/level${selectedLevel}.png`}
               alt="flying card"
               className="flying-card-img"
             />

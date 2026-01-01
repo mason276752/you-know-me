@@ -28,7 +28,7 @@ const Card = ({ level, content, isFlipped, onFlip }) => {
       <div className="card">
         <div className="card-front">
           <img
-            src={`/level${level}.png`}
+            src={process.env.PUBLIC_URL + `/level${level}.png`}
             alt={`Level ${level} card back`}
             className="card-image"
           />

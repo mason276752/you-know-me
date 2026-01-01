@@ -21,7 +21,7 @@ const CardDeck = ({ level, onSelectDeck }) => {
         <div className="deck-card deck-card-2"></div>
         <div className="deck-card deck-card-1">
           <img
-            src={`/level${level}.png`}
+            src={process.env.PUBLIC_URL + `/level${level}.png`}
             alt={`Level ${level} deck`}
             className="deck-image"
           />
