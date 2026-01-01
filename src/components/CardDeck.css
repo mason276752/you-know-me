@@ -1,0 +1,88 @@
+.deck-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  margin: 20px;
+  transition: transform 0.2s;
+}
+
+.deck-container:hover {
+  transform: scale(1.05);
+}
+
+.deck-stack {
+  width: 200px;
+  height: 280px;
+  position: relative;
+}
+
+.deck-card {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: white;
+}
+
+.deck-card-3 {
+  transform: rotate(-3deg) translateY(8px);
+  opacity: 0.6;
+}
+
+.deck-card-2 {
+  transform: rotate(-1.5deg) translateY(4px);
+  opacity: 0.8;
+}
+
+.deck-card-1 {
+  transform: rotate(0deg);
+}
+
+.deck-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.deck-label {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .deck-container {
+    margin: 15px;
+  }
+
+  .deck-stack {
+    width: 160px;
+    height: 224px;
+  }
+
+  .deck-label {
+    font-size: 16px;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .deck-container {
+    margin: 10px;
+  }
+
+  .deck-stack {
+    width: 140px;
+    height: 196px;
+  }
+
+  .deck-label {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
