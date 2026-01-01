@@ -2,6 +2,7 @@
   "name": "you-know-me",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mason276752.github.io/you-know-me",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
